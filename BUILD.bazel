@@ -1,0 +1,30 @@
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@example_pkg_deps//:requirements.bzl", "all_requirements")
+
+py_binary(
+    name = "create_wheels",
+    srcs = ["create_wheels.py"],
+    deps = [
+        "@python_deps//setuptools",
+        "@python_deps//req_compile",
+    ],
+)
+
+py_binary(
+    name = "pkg_tester",
+    srcs = ["pkg_tester.py"],
+    deps = ["@rules_python//python/runfiles"],
+)
+
+[
+    py_binary(
+        name = "{}_tester".format(req.split("/")[-1].split(":")[0]),
+        srcs = ["pkg_tester.py"],
+        main = "pkg_tester.py",
+        deps = [
+            req,
+            ":pkg_tester",
+        ],
+    )
+    for idx, req in enumerate(all_requirements)
+]

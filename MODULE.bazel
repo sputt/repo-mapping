@@ -1,0 +1,26 @@
+module(
+    name = "repo_mapping",
+    version = "1.0",
+)
+
+bazel_dep(name = "rules_python", version = "1.0.0")
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+
+python.toolchain(python_version = "3.11", is_default = True)
+use_repo(python, "python_3_11")
+
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+pip.parse(
+    hub_name = "repo_mapping_python_deps",
+    python_version = "3.11",
+    requirements_lock = "requirements.txt",
+)
+
+pip.parse(
+    hub_name = "example_pkg_deps",
+    python_version = "3.11",
+    requirements_lock = "test_requirements.txt",
+    envsubst = ["WHEELDIR"],
+    extra_pip_args = ["--find-links", "$WHEELDIR"],
+)
+use_repo(pip, "example_pkg_deps", python_deps = "repo_mapping_python_deps")

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "common --repo_env=WHEELDIR=$(pwd)" > wheeldir.bazelrc
+exec "${BAZEL_REAL}" "$@"

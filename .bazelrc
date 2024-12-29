@@ -1,0 +1,3 @@
+common --@rules_python//python/config_settings:bootstrap_impl=script
+common --incompatible_disallow_empty_glob=False
+import %workspace%/wheeldir.bazelrc
